@@ -1,0 +1,26 @@
+
+
+@font-face {
+    font-family: 'The Bold Font';
+    src: url('TheBoldFont-Bold.eot');
+    src: url('TheBoldFont-Bold.eot?#iefix') format('embedded-opentype'),
+        url('TheBoldFont-Bold.woff2') format('woff2'),
+        url('TheBoldFont-Bold.woff') format('woff'),
+        url('TheBoldFont-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'The Bold Font';
+    src: url('TheBoldFont-Bold_1.eot');
+    src: url('TheBoldFont-Bold_1.eot?#iefix') format('embedded-opentype'),
+        url('TheBoldFont-Bold_1.woff2') format('woff2'),
+        url('TheBoldFont-Bold_1.woff') format('woff'),
+        url('TheBoldFont-Bold_1.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

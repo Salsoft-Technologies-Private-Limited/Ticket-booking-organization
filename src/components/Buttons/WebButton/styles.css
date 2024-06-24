@@ -1,0 +1,111 @@
+.site-btn {
+    color: #fff;
+    font-size: 18px;
+    display: inline-block;
+    padding: 10px 70px;
+    min-width: 130px;
+    text-align: center;
+    text-transform: capitalize;
+    border: 1px solid #0072CF;
+    background: #0072CF;
+    transition: ease-in-out .2s;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 300;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.site-btn:hover {
+    background: transparent;
+    color: #0072CF;
+}
+
+.site-btn-gray {
+    color: #fff;
+    font-size: 18px;
+    display: inline-block;
+    padding: 10px 70px;
+    min-width: 130px;
+    text-align: center;
+    text-transform: capitalize;
+    border: 1px solid #999999;
+    background: #999999;
+    transition: ease-in-out .2s;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 300;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.site-btn-gray:hover {
+    background: transparent;
+    color: #999999;
+}
+
+.site-btn-transparent {
+    color: #0072CF;
+    font-size: 18px;
+    display: inline-block;
+    padding: 10px 65px;
+    min-width: 130px;
+    text-align: center;
+    text-transform: capitalize;
+    border: 1px solid #0072CF;
+    background: none;
+    transition: ease-in-out .2s;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 300;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.site-btn-transparent:hover {
+    background: #0072CF;
+    color: #fff;
+}
+
+
+@media screen and (max-width: 575px) {
+    .site-btn {
+        color: #fff;
+        font-size: 12px;
+        display: inline-block;
+        padding: 8px 5px;
+        min-width: 100px;
+        text-align: center;
+        text-transform: capitalize;
+        border: 1px solid #0072CF;
+        background: #0072CF;
+        transition: ease-in-out .2s;
+        font-family: 'Rubik', sans-serif;
+        font-weight: 300;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .site-btn-transparent {
+        color: #0072CF;
+        font-size: 12px;
+        display: inline-block;
+        padding: 8px 5px;
+        min-width: 100px;
+        text-align: center;
+        text-transform: capitalize;
+        border: 1px solid #0072CF;
+        background: none;
+        transition: ease-in-out .2s;
+        font-family: 'Rubik', sans-serif;
+        font-weight: 300;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .site-btn-gray{
+        padding: 8px 5px;
+        font-size: 12px;
+        min-width: 100px;
+    }
+    
+}
+
+
