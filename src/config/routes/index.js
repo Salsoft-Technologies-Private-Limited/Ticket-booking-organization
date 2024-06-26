@@ -57,7 +57,7 @@ import OrderManagement from "../../views/orderManagement";
 import OrderDetail from "../../views/orderManagement/myorderInfo/orderDetail";
 import Eventreservation from "../../views/eventManagement/reservationLogs";
 import EventreservationDetails from "../../views/eventManagement/reservationDetails";
-
+import ProtectedRoute from "../../views/protectedRoute";
 
 const MyRouter = () => {
   return (
@@ -121,36 +121,42 @@ const MyRouter = () => {
           path="/profile"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <Profile />
             </ClientLayout>
+              </ProtectedRoute>
           }
         />
         <Route
           path="/editProfile"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <EditProfile />
             </ClientLayout>
+              </ProtectedRoute>
           }
         />
         <Route
           path="/changePassword"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <ChangePassword />
             </ClientLayout>
+              </ProtectedRoute>
           }
         />
 
@@ -300,61 +306,72 @@ const MyRouter = () => {
           path="/eventManagement"
           index
           element={
+            <ProtectedRoute>
+
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <EventManagement />
             </ClientLayout>
+              </ProtectedRoute>
           }
-        />
+          />
          
         <Route
           path="/eventManagement/:id"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <EventDetails />
             </ClientLayout>
+              </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/eventManagement/reservationLogs"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <Eventreservation />
             </ClientLayout>
+              </ProtectedRoute>
           }
-        />
+          />
          <Route
           path="/eventManagement/reservationLogs/:id"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
-              head={{ title: "Dashboard", description: "Some Description." }}
-              headerStyle={{ height: { base: "40px", md: 14 } }}
+            head={{ title: "Dashboard", description: "Some Description." }}
+            headerStyle={{ height: { base: "40px", md: 14 } }}
             >
               <EventreservationDetails />
             </ClientLayout>
+          </ProtectedRoute>
           }
-        />
+          />
         <Route
           path="/createEvent"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
             >
               <CreateEvent />
             </ClientLayout>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -505,48 +522,57 @@ const MyRouter = () => {
           path="/artistManagement"
           index
           element={
+           <ProtectedRoute>
+
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <ArtistManagement />
             </ClientLayout>
+              </ProtectedRoute> 
           }
-        />
+          />
         <Route
           path="/addArtist"
           index
           element={
+          <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
             >
               <AddArtist />
             </ClientLayout>
+              </ProtectedRoute> 
           }
-        />
+          />
         <Route
           path="/artistManagement/:id"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
-            >
+              >
               <ArtistDetails />
             </ClientLayout>
+              </ProtectedRoute> 
           }
-        />
+          />
         <Route
           path="/artistManagement/editArtist/:id"
           index
           element={
+            <ProtectedRoute>
             <ClientLayout
               head={{ title: "Dashboard", description: "Some Description." }}
               headerStyle={{ height: { base: "40px", md: 14 } }}
             >
               <EditArtist />
             </ClientLayout>
+          </ProtectedRoute> 
           }
         />
         <Route
