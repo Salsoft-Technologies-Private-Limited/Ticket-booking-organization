@@ -57,7 +57,6 @@ import OrderManagement from "../../views/orderManagement";
 import OrderDetail from "../../views/orderManagement/myorderInfo/orderDetail";
 import Eventreservation from "../../views/eventManagement/reservationLogs";
 import EventreservationDetails from "../../views/eventManagement/reservationDetails";
-import ProtectedRoute from "../../views/protectedRoute";
 
 const MyRouter = () => {
   return (
