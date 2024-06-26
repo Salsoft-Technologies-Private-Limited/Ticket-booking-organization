@@ -1,21 +1,25 @@
+// export const BASE_URL = "https://secure.demo243.webhostlabs.net:3002/api/"
+// export const UPLOADS_URL = "https://secure.demo243.webhostlabs.net:3002/Uploads/"
 const { NODE_ENV } = process.env;
 const { hostname } = window.location;
 
 const servers = {
-  local: "http://localhost:3016",
-  customDev: "https://react.customdev.solutions:3016",
+  local: "http://localhost:3024",
+  customDev: "https://react.customdev.solutions:3024",
   live: "",
 };
 
 var URL;
 if (NODE_ENV === "production" && hostname === "react.customdev.solutions")
   URL = servers.customDev;
-else if (NODE_ENV === "production" && hostname === "") URL = servers.live;
-else URL = servers.customDev;
+else if (NODE_ENV === "production" && hostname === "")
+  URL = servers.live;
+else URL = servers.local;
+
+// export const SOCKET_URL = `${URL}`;
 
 export const UPLOADS_URL = URL + "/Uploads/";
 export const BASE_URL = URL + "/api";
-export const SOCKET_URL = `${URL}`
 
 export const SITE_NAME = "My Website";
 export const countries = ["USA", "Canada", "UK"];
@@ -24,10 +28,20 @@ export const AUTH = {
   login: "/auth/signin",
 };
 export const USER_AUTH = {
-  login: "/user/login",
-  signup: "/user/signup",
+  login: "/organization/login",
+  signup: "/organization/signup",
   getAccountDetails: "/user/getAccountDetails",
 };
+export const ARTIST = {
+  getOrganizationArtists: "/artist/getOrganizationArtists",
+  getArtist: "/artist/getArtist/",
+  addArtist: "/artist/addArtist",
+  getOrganizationArtists: "/artist/getOrganizationArtists",
+  updateArtist : "/artist/updateArtist/"
+};
+export const ORGANIZATION = {
+  getDashboardInfo : "/organization/getDashboardInfo"
+}
 export const COMPANY = {
   // getPricing : "/company/getPricing/",
   getProfile: "/company/getProfile/",
@@ -42,9 +56,7 @@ export const COMPANY = {
   toggleStatus: "/company/toggleStatus/",
 };
 export const PROFILE = {
-  getMyProfile: "/user/getMyProfile",
-  createProfile: "/user/createProfile",
-  updateMyProfile: "/user/updateMyProfile",
+  editProfile: "/organization/editProfile",
 };
 export const JOB = {
   getCompanyJobs: "/company/career/getAllJobs/",
@@ -62,14 +74,13 @@ export const JUMP = {
   getAllJumps: "/jump/getAllJumps",
 };
 export const BOOKING = {
-  mybookings: "/booking/getMyBookings",
-  getbooking: "/booking/getBooking/",
-  getAllBookings: "/booking/getAllBookings",
+  getAllEventBookings: "/booking/getAllEventBookings/",
+  getBooking: "/booking/getBooking/",
 };
 export const EVENT = {
-  getupcomingevents: "/company/event/getUpcomingEvents",
-  getevent: "/company/event/getEvent/",
-  addEvent: "/company/event/addEvent",
+  getOrganizationEvents: "/event/getOrganizationEvents/",
+  getEvent: "/event/getEvent/",
+  addEvent: "/event/addEvent",
   updateEvent: "/company/event/updateEvent/",
   deleteEvent: "/company/event/deleteEvent/",
 };
@@ -95,8 +106,8 @@ export const PRODUCT = {
   getVendorProducts: "/product/getAllVendorProducts",
   getProduct: "/product/getProduct/",
   getAdminProducts: "/product/getAllAdminProducts",
-  deleteProduct : "/product/deleteProduct/",
-  addProduct : "/product/addProduct"
+  deleteProduct: "/product/deleteProduct/",
+  addProduct: "/product/addProduct",
 };
 export const REVIEWS = {
   getGigReviews: "/review/getGigReviews/",
@@ -152,19 +163,19 @@ export const ADMIN = {
   dashboardInfo: "/user/admin/dashboard",
 };
 export const NOTIFICATIONS = {
-  getMyNotifications :"/notification/getAllMyNotifications",
-  toggleNotification : "/notification/toggleNotification/",
-  getAllAdminNotifications : "/notification/getAllAdminNotifications"
-}
+  getMyNotifications: "/notification/getAllMyNotifications",
+  toggleNotification: "/notification/toggleNotification/",
+  getAllAdminNotifications: "/notification/getAllAdminNotifications",
+};
 export const VENDORS = {
-  getVendors : "/vendor/getVendors",
-  getVendor : "/vendor/getVendor/",
-  toggleStatus : "/vendor/toggleStatus/"
-}
+  getVendors: "/vendor/getVendors",
+  getVendor: "/vendor/getVendor/",
+  toggleStatus: "/vendor/toggleStatus/",
+};
 export const DRIVERS = {
-  getDrivers : "/driver/getDrivers",
-  getDriverVehicle:"/driver/getDriverVehicle/",
-  getDriver : "/driver/getDriver/"
-}
+  getDrivers: "/driver/getDrivers",
+  getDriverVehicle: "/driver/getDriverVehicle/",
+  getDriver: "/driver/getDriver/",
+};
 export const GOOGLE_MAPS = "AIzaSyBXqV9bSEkfm5Wh7OQMj37V-n3F4AiyE40";
 // export const GOOGLE_MAPS = 'AIzaSyBECY2aNK5YkXshm_ZEqtZY0M_hcJT65Iw'

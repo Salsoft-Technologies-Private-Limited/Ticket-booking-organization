@@ -18,16 +18,15 @@ import DashbordSidebar from "../../components/DashboardSidebar";
 import { AiOutlineEye } from "react-icons/ai";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { Get } from "../../config/api/get";
-import { FEEDBACK, JUMP } from "../../config/constants/api";
+import { ARTIST, FEEDBACK, JUMP, UPLOADS_URL } from "../../config/constants/api";
 import { extractDate } from "../../config/helpers";
 import { useDebouncedCallback } from "use-debounce";
 import { artistData } from "../../components/Data/data";
 import moment from "moment";
 
-
 const FeedbackManagement = () => {
   const token = useSelector((state) => state.user.userToken);
-  const [feedbacks, setFeedbacks] = useState(null);
+  const [artists, setArtists] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -45,13 +44,13 @@ const FeedbackManagement = () => {
     to: null,
   });
   const navigate = useNavigate();
-  
-    useEffect(() => {
-      getFeedbacks();
-    }, []);
 
-  const getFeedbacks = (pageNumber, pageSize,  from, to, keyword) =>{
-    Get(FEEDBACK.getFeedbacks, token, {
+  useEffect(() => {
+    getArtists();
+  }, []);
+
+  const getArtists = (pageNumber, pageSize, from, to, keyword) => {
+    Get(ARTIST.getOrganizationArtists, token, {
       from,
       to,
       keyword,
@@ -59,23 +58,24 @@ const FeedbackManagement = () => {
         ? pageNumber.toString()
         : paginationConfig.pageNumber.toString(),
       limit: pageSize ? pageSize.toString() : paginationConfig.limit.toString(),
-    }).then((response) => {
-      if (response?.data?.docs) {
-        setFeedbacks(response?.data?.docs);
-        setPaginationConfig({
-          pageNumber: response?.data?.page,
-          limit: response?.data?.limit,
-          totalDocs: response?.data?.totalDocs,
-          totalPages: response?.data?.totalPages,
-        });
-        setLoading(false);
-      }
     })
-    .catch((err) => {
-      console.log("Error Fetching Loads", err);
-      setLoading(false);
-    });
-  }
+      .then((response) => {
+        if (response?.data?.docs) {
+          setArtists(response?.data?.docs);
+          setPaginationConfig({
+            pageNumber: response?.data?.page,
+            limit: response?.data?.limit,
+            totalDocs: response?.data?.totalDocs,
+            totalPages: response?.data?.totalPages,
+          });
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log("Error Fetching Loads", err);
+        setLoading(false);
+      });
+  };
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
@@ -85,7 +85,7 @@ const FeedbackManagement = () => {
     startIndex + paginationConfig.limit - 1,
     paginationConfig.totalDocs
   );
-  const message = feedbacks
+  const message = artists
     ? `Showing records ${endIndex} of ${paginationConfig.totalDocs}`
     : "Showing records 0 of 0";
 
@@ -94,7 +94,7 @@ const FeedbackManagement = () => {
       ...paginationConfig,
       pageNumber: pageNumber,
     });
-    getFeedbacks(pageNumber, paginationConfig.limit);
+    getArtists(pageNumber, paginationConfig.limit);
   };
 
   const handleSearch = useDebouncedCallback((value) => {
@@ -102,7 +102,7 @@ const FeedbackManagement = () => {
       ...filter,
       keyword: value,
     });
-    getFeedbacks(
+    getArtists(
       paginationConfig.pageNumber,
       paginationConfig.limit,
       null,
@@ -166,22 +166,17 @@ const FeedbackManagement = () => {
     if (data.to) {
       to = moment(filter?.to?.$d).format("YYYY-MM-DD");
     }
-    if (from || to ) {
-      getFeedbacks(
-        paginationConfig.pageNumber,
-        paginationConfig.limit,
-        from,
-        to
-      );
+    if (from || to) {
+      getArtists(paginationConfig.pageNumber, paginationConfig.limit, from, to);
     } else {
       return;
     }
   };
   const handleClear = () => {
     resetFilter();
-    getFeedbacks();
+    getArtists();
   };
-  
+
   const itemRender = (_, type, originalElement) => {
     if (type === "prev") {
       return <a>Previous</a>;
@@ -201,33 +196,64 @@ const FeedbackManagement = () => {
       render: (value, item, index) => (index < 9 && "0") + (index + 1),
     },
     {
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (value, item, index) => (
+        <img
+          src={UPLOADS_URL + value}
+          alt="event image"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+      ),
+    },
+    {
       title: "Name",
-      dataIndex: "Name",
-      key: "Name",
-      render: (value, item) => item.firstName + ' ' + item.lastName
+      dataIndex: "fullName",
+      key: "fullName",
     },
 
     {
-      title: "Email",
+      title: "Email Address",
       dataIndex: "email",
       key: "email",
     },
     {
-      title: "Received On",
+      title: "Category Type",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+    },
+    {
+      title: "Event Type",
+      dataIndex: "eventType",
+      key: "eventType",
+    },
+    {
+      title: "Date",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (item) => <span>{extractDate(item)}</span>,
     },
+    
     {
       title: "Action",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
       render: (value, item, index) => (
         <AiOutlineEye
           style={{ fontSize: "18px", color: "grey", cursor: "pointer" }}
-          onClick={() =>
-            navigate(`/artistManagement/${value}`)
-          }
+          onClick={() => navigate(`/artistManagement/${value}`)}
         />
       ),
     },
@@ -260,8 +286,6 @@ const FeedbackManagement = () => {
           onChange={(e) => handleTo(e)}
           style={{ width: "100%" }}
         />
-
-        
 
         <Button
           type=""
@@ -298,81 +322,82 @@ const FeedbackManagement = () => {
                   <section className="side-menu-parent">
                     <DashbordSidebar />
                     <div className="about-us-section">
-                    
-                    <Row style={{ padding: "10px 20px" }}>
-                                      <Col xs={24} md={12}>
-                                        <h3 className="heading-28">
-                                          Artist
-                                        </h3>
-                                      </Col>
-                                      <Col
-                                        xs={24}
-                                        md={12}
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "flex-end",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Popover
-                                          content={filterContent}
-                                          trigger="click"
-                                          open={open}
-                                          onOpenChange={handleOpenChange}
-                                          placement="bottomRight"
-                                          arrow={false}
-                                        >
-                                          <Button
-                                            shape="circle"
-                                            style={{
-                                              padding: "12px 12px 5px",
-                                              height: "auto",
-                                              backgroundColor: "#7F00FF",
-                                            }}
-                                          >
-                                            <FaFilter
-                                              style={{
-                                                fontSize: "16px",
-                                                color: "white",
-                                              }}
-                                            />
-                                          </Button>
-                                        </Popover>
-                                        &emsp;
-                                        <Input
-                                          style={{ width: "250px" }}
-                                          className="mainInput dashInput table-search"
-                                          placeholder="Search Here"
-                                          onChange={(e) =>
-                                            handleSearch(e.target.value)
-                                          }
-                                          suffix={
-                                            <FaSearch
-                                              style={{
-                                                color: "grey",
-                                                fontSize: 16,
-                                                cursor: "pointer",
-                                              }}
-                                              // onClick={() =>
-                                              //   getOrders(
-                                              //     1,
-                                              //     paginationConfig.limit,
-                                              //     filter.keyword
-                                              //   )
-                                              // }
-                                            />
-                                          }
-                                          // onPressEnter={(e) =>
-                                          //   getOrders(
-                                          //     1,
-                                          //     paginationConfig.limit,
-                                          //     filter.keyword
-                                          //   )
-                                          // }
-                                        />
-                                        <Button className="web-btn" onClick={() => navigate("/addArtist")} style={{  margin:"0 0 0 10px" }}>ADD ARTISTS</Button>
-                                      </Col>
-                                    </Row>
+                      <Row style={{ padding: "10px 20px" }}>
+                        <Col xs={24} md={12}>
+                          <h3 className="heading-28">Artist</h3>
+                        </Col>
+                        <Col
+                          xs={24}
+                          md={12}
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Popover
+                            content={filterContent}
+                            trigger="click"
+                            open={open}
+                            onOpenChange={handleOpenChange}
+                            placement="bottomRight"
+                            arrow={false}
+                          >
+                            <Button
+                              shape="circle"
+                              style={{
+                                padding: "12px 12px 5px",
+                                height: "auto",
+                                backgroundColor: "#7F00FF",
+                              }}
+                            >
+                              <FaFilter
+                                style={{
+                                  fontSize: "16px",
+                                  color: "white",
+                                }}
+                              />
+                            </Button>
+                          </Popover>
+                          &emsp;
+                          <Input
+                            style={{ width: "250px" }}
+                            className="mainInput dashInput table-search"
+                            placeholder="Search Here"
+                            onChange={(e) => handleSearch(e.target.value)}
+                            suffix={
+                              <FaSearch
+                                style={{
+                                  color: "grey",
+                                  fontSize: 16,
+                                  cursor: "pointer",
+                                }}
+                                // onClick={() =>
+                                //   getOrders(
+                                //     1,
+                                //     paginationConfig.limit,
+                                //     filter.keyword
+                                //   )
+                                // }
+                              />
+                            }
+                            // onPressEnter={(e) =>
+                            //   getOrders(
+                            //     1,
+                            //     paginationConfig.limit,
+                            //     filter.keyword
+                            //   )
+                            // }
+                          />
+                          <Button
+                            className="web-btn"
+                            onClick={() => navigate("/addArtist")}
+                            style={{ margin: "0 0 0 10px" }}
+                          >
+                            ADD ARTISTS
+                          </Button>
+                        </Col>
+                      </Row>
                       <div className="">
                         <Row justify="center">
                           <Col xs={24} md={24} xl={24}>
@@ -380,8 +405,6 @@ const FeedbackManagement = () => {
                               <Row align="middle" gutter={16}>
                                 <Col lg={24}>
                                   <div className="boxDetails">
-                                    
-
                                     <Row
                                       style={{ padding: 20, overflow: "auto" }}
                                     >
@@ -400,7 +423,7 @@ const FeedbackManagement = () => {
                                       ) : (
                                         <Table
                                           className="styledTable"
-                                          dataSource={artistData}
+                                          dataSource={artists}
                                           columns={columns}
                                           pagination={false}
                                         />

@@ -43,7 +43,7 @@ import { AiFillCaretDown, AiFillApple } from "react-icons/ai";
 import Logo from "../../assets/logo-header.png";
 import avatar from "../../assets/avatar.png";
 import { Get } from "../../config/api/get";
-import socket from "../../config/socket";
+// import socket from "../../config/socket";
 // import Link from 'next/link'
 import { setCount } from "../../redux/slice/notificationSlice";
 import swal from "sweetalert";
@@ -56,7 +56,7 @@ const ClientHeader = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const user = useSelector((state) => state.user.userData);
-  const profileDetails = useSelector((state) => state.user.profileDetails);
+  const userData = useSelector((state) => state.user.userData);
   const cart = useSelector((state) => state.cart.cartItems);
   const token = useSelector((state) => state.user.userToken);
   const notificationsCount = useSelector((state) => state.notification.count);
@@ -70,18 +70,18 @@ const ClientHeader = () => {
     navigate("/login");
   };
   const [latestNotifications, setLatestNotifications] = useState(null);
-  useEffect(() => {
-    getAllNotifications();
-  }, []);
+  // useEffect(() => {
+  //   getAllNotifications();
+  // }, []);
 
-  useEffect(() => {
-    socket.on("notification", (data) => {
-      getAllNotifications();
-    });
-    return () => {
-      socket.off("notification");
-    };
-  }, []);
+  // useEffect(() => {
+  //   socket.on("notification", (data) => {
+  //     getAllNotifications();
+  //   });
+  //   return () => {
+  //     socket.off("notification");
+  //   };
+  // }, []);
   const getAllNotifications = () => {
     Get(NOTIFICATIONS.getAllAdminNotifications, token, {
       page: "1",
@@ -376,7 +376,7 @@ const ClientHeader = () => {
                     &emsp;
                     <div
                       style={{
-                        minWidth: "120px",
+                        minWidth: "220px",
                         display: "flex",
                         alignItems: "center",
                       }}
@@ -384,9 +384,9 @@ const ClientHeader = () => {
                       <Avatar
                         size={30}
                         src={
-                          !profileDetails?.image
+                          !userData?.image
                             ? avatar
-                            : UPLOADS_URL + "/" + profileDetails?.image
+                            : UPLOADS_URL + "/" + userData?.image
                         }
                       />
 
@@ -502,9 +502,9 @@ const ClientHeader = () => {
               <Avatar
                 size={40}
                 src={
-                  !user?.image
+                  !userData?.image
                     ? "/images/avatar.png"
-                    : UPLOADS_URL + "/" + user.image
+                    : UPLOADS_URL + "/" + userData.image
                 }
               />
 

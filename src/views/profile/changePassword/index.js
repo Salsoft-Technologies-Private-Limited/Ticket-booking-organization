@@ -11,24 +11,31 @@ import { RESET } from "../../../config/constants/api";
 const DropzoneFiltercards = () => {
   const [form] = Form.useForm();
   const token = useSelector((state) => state.user.userToken);
-  const profileDetails = useSelector((state) => state.user.profileDetails);
+  const userData = useSelector((state) => state.user.userData);
   const navigate = useNavigate();
   const onFinish = (values) => {
-    if(values?.password !== values?.confirmpassword){
+    if (values?.password !== values?.confirmpassword) {
       swal("Error", "Password and Confirm Password should match", "error");
       return;
     }
-    let body = {email:profileDetails.email, type:'USER', password : values?.password , oldPassword : values.oldPassword}
-    Post(RESET.changePassword, body , token).then((response)=>{
-      if(response.status){
-        form.resetFields();
-        showAlert()
-        navigate("/Profile")
-      }
-    }).catch((err)=>{
-      console.log("Error", err);
-      swal("Error", err?.response?.data?.message, "error");
-    })
+    let body = {
+      email: userData.email,
+      type: "ORGANIZATION",
+      password: values?.password,
+      oldPassword: values.oldPassword,
+    };
+    Post(RESET.changePassword, body, token)
+      .then((response) => {
+        if (response.status) {
+          form.resetFields();
+          showAlert();
+          navigate("/Profile");
+        }
+      })
+      .catch((err) => {
+        console.log("Error", err);
+        swal("Error", err?.response?.data?.message, "error");
+      });
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -80,7 +87,6 @@ const DropzoneFiltercards = () => {
                                   },
                                   {
                                     type: "string",
-                                 
                                   },
                                 ]}
                               >
@@ -105,7 +111,6 @@ const DropzoneFiltercards = () => {
                                   },
                                   {
                                     type: "string",
-                                  
                                   },
                                 ]}
                               >
@@ -131,7 +136,6 @@ const DropzoneFiltercards = () => {
                                   },
                                   {
                                     type: "string",
-                                   
                                   },
                                 ]}
                               >
@@ -146,16 +150,15 @@ const DropzoneFiltercards = () => {
                                   }}
                                 />
                               </Form.Item>
-                              <Form.Item
-                                style={{ textAlign: "center", }}
-                              >
+                              <Form.Item style={{ textAlign: "center" , }}>
                                 <Button
                                   type="button"
                                   htmlType="submit"
                                   className="web-btn"
                                   style={{
                                     cursor: "pointer",
-                                    margin:"2px"
+                                    margin: "2px",
+                                    display:"inline-block"
                                   }}
                                 >
                                   Save
@@ -163,10 +166,11 @@ const DropzoneFiltercards = () => {
                                 <Button
                                   type="button"
                                   htmlType="submit"
-                                  className="web-btn3"
+                                  className="mainbtn"
                                   style={{
                                     cursor: "pointer",
-                                    margin:"2px"
+                                    margin: "2px",
+                                    display:"inline-block"
                                   }}
                                   onClick={() => navigate("/profile")}
                                 >

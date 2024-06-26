@@ -55,8 +55,7 @@ const SideMenu = () => {
             </div>
             <div
               className={`vector-one-parent ${
-                location.pathname === "/eventManagement" ||
-                location.pathname === "/eventManagement"
+                location.pathname.includes("/eventManagement")
                   ? "active"
                   : ""
               }`}
@@ -75,7 +74,7 @@ const SideMenu = () => {
                 Event Management
               </div>
             </div>
-            <div
+            {/* <div
               className={`vector-one-parent ${
                 location.pathname === "/userManagement" ||
                 location.pathname === "/userManagement"
@@ -96,7 +95,7 @@ const SideMenu = () => {
               >
                 User Management
               </div>
-            </div>
+            </div> */}
             {/* <div
               className={`vector-one-parent ${
                 location.pathname === "/dropZoneManagement" ||
@@ -121,8 +120,7 @@ const SideMenu = () => {
             </div> */}
             <div
               className={`vector-one-parent ${
-                location.pathname === "/artistManagement" ||
-                location.pathname === "/artistManagement"
+                location.pathname.includes( "/artistManagement")
                   ? "active"
                   : ""
               }`}

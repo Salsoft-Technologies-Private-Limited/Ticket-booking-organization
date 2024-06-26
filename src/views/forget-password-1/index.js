@@ -12,7 +12,7 @@ function ForgetPassword() {
   const token = useSelector((state) => state.user.userToken);
   const navigate = useNavigate();
   const onFinish = (values) => {
-    Post(RESET.sendCode, { email: values.email, type: "ADMIN" }, token)
+    Post(RESET.sendCode, { email: values.email, type: "ORGANIZATION" }, token)
       .then((response) => {
         if (response.status) {
           form.resetFields();

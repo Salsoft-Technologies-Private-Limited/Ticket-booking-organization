@@ -6,7 +6,7 @@ import { Get } from "../../config/api/get.js";
 import { COMPANY, NOTIFICATIONS } from "../../config/constants/api.js";
 import { useSelector } from "react-redux";
 import { extractDate, extractTime } from "../../config/helpers/index.js";
-import socket from "../../config/socket/index.js";
+// import socket from "../../config/socket/index.js";
 import { Put } from "../../config/api/put.js";
 import swal from "sweetalert";
 
@@ -50,17 +50,17 @@ function Notifications() {
         console.log("Error fetching notifications ", err);
       });
   };
-  useEffect(() => {
-    getAllNotifications();
-  }, []);
-  useEffect(() => {
-    socket.on("notification", (data) => {
-      getAllNotifications();
-    });
-    return () => {
-      socket.off("notification");
-    };
-  }, []);
+  // useEffect(() => {
+  //   getAllNotifications();
+  // }, []);
+  // useEffect(() => {
+  //   socket.on("notification", (data) => {
+  //     getAllNotifications();
+  //   });
+  //   return () => {
+  //     socket.off("notification");
+  //   };
+  // }, []);
   const itemRender = (_, type, originalElement) => {
     if (type === "prev") {
       return <a>Previous</a>;

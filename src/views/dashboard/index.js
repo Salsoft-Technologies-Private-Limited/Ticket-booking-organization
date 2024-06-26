@@ -22,7 +22,7 @@ import {
 import { Line } from "react-chartjs-2";
 import { Bar } from "react-chartjs-2";
 import { Get } from "../../config/api/get";
-import { ADMIN } from "../../config/constants/api";
+import { ADMIN, ORGANIZATION } from "../../config/constants/api";
 import { BsArrowLeftRight } from "react-icons/bs";
 
 ChartJS.register(CategoryScale);
@@ -88,10 +88,11 @@ const Dashboard = () => {
   const token = useSelector((state) => state.user.userToken);
   const [info, setInfo] = useState(null);
   const getDashboardInfo = () => {
-    Get(ADMIN.dashboardInfo, token)
+    Get(ORGANIZATION.getDashboardInfo, token)
       .then((response) => {
         if (response?.status) {
           setInfo(response?.data);
+
         }
       })
       .catch((err) => {
@@ -120,7 +121,7 @@ const Dashboard = () => {
                       <Col xs={24}>
                         <div  style={{ background: "#fff", padding:"20px", borderRadius:"10px" }}>
                         <Row  gutter={[16, 0]}>
-                        <Col xs={24} md={12} lg={6}>
+                        <Col xs={24} md={12} lg={8}>
                           <div className="boxDetails analytics1 bg-parent dashboard-right-card">
                             <Row
                               style={{
@@ -156,13 +157,13 @@ const Dashboard = () => {
                                     textAlign: "start",
                                   }}
                                 >
-                                  <BsArrowLeftRight /> 10% Since last week
+                                  <BsArrowLeftRight /> {info?.totalEvents}
                                 </p>
                               </Col>
                             </Row>
                           </div>
                         </Col>
-                        <Col xs={24} md={12} lg={6}>
+                        <Col xs={24} md={12} lg={8}>
                           <div className="boxDetails analytics1 bg-parent dashboard-right-card">
                             <Row
                               style={{
@@ -176,7 +177,7 @@ const Dashboard = () => {
                                   className="analyticsText"
                                   style={{ margin: 0 }}
                                 >
-                                  Ticket Sales
+                                  Ticket Sales Amount
                                 </h4>
                               </Col>
                               <Col xs={7} md={6}>
@@ -197,13 +198,13 @@ const Dashboard = () => {
                                     textAlign: "Start",
                                   }}
                                 >
-                                  <BsArrowLeftRight /> 18% Since last week
+                                  <BsArrowLeftRight /> USD {info?.totalSales}
                                 </p>
                               </Col>
                             </Row>
                           </div>
                         </Col>
-                        <Col xs={24} md={12} lg={6}>
+                        {/* <Col xs={24} md={12} lg={6}>
                           <div className="boxDetails analytics1 bg-parent dashboard-right-card">
                             <Row
                               style={{
@@ -243,8 +244,8 @@ const Dashboard = () => {
                               </Col>
                             </Row>
                           </div>
-                        </Col>
-                        <Col xs={24} md={12} lg={6}>
+                        </Col> */}
+                        <Col xs={24} md={12} lg={8}>
                           <div className="boxDetails analytics1 bg-parent dashboard-right-card">
                             <Row
                               style={{
@@ -279,7 +280,7 @@ const Dashboard = () => {
                                     textAlign: "start",
                                   }}
                                 >
-                                  <BsArrowLeftRight /> 08% Since last week
+                                  <BsArrowLeftRight /> {info?.totalArtists}
                                 </p>
                               </Col>
                             </Row>

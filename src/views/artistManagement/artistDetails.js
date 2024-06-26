@@ -1,12 +1,13 @@
-import { Col, Row, Card, Typography, Form, Spin, Button } from "antd";
+import { Col, Row, Card, Typography, Form, Spin, Button, Image } from "antd";
 import { useNavigate, useParams } from "react-router";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import DashbordSidebar from "../../components/DashboardSidebar";
 import { Get } from "../../config/api/get";
-import { FEEDBACK } from "../../config/constants/api";
+import { ARTIST, FEEDBACK, UPLOADS_URL } from "../../config/constants/api";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { extractDate } from "../../config/helpers";
 // const { Meta } = Card;
 const { Title } = Typography;
 
@@ -16,11 +17,10 @@ const FeedbackDetails = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [details, setDetails] = useState(null);
-  const getFeedbackDetails = () => {
+  const getArtistDetails = () => {
     setLoading(true);
-    Get(`${FEEDBACK.getFeedback}${id}`, token)
+    Get(`${ARTIST.getArtist}${id}`, token)
       .then((response) => {
-        console.log(response);
         if (response.status) {
           setDetails(response?.data);
           setLoading(false);
@@ -32,7 +32,7 @@ const FeedbackDetails = () => {
       });
   };
   useEffect(() => {
-    getFeedbackDetails();
+    getArtistDetails();
   }, []);
   return (
     <div className="shop-page">
@@ -72,20 +72,25 @@ const FeedbackDetails = () => {
                               <div className="">
                                 <div className="logo-rectangle">
                                   <div className="profile-info">
-                                    <div className="wrapper-group-1000001858">
-                                      {/* {userManagement?.pic} */}
+                                    <div className="wrapper-group-1000001858" >
+                                      <img
+                                        src={UPLOADS_URL + details?.image}
+                                        alt="event image"
+                                        preview="false"
+                                       
+                                      />
                                     </div>
                                     <div className="full-name">
                                       <div className="jake-dawson">
                                         <div className="phone-number">
                                           <div className="full-name1">
                                             <p className="full-name2">
-                                              First Name
+                                              Full Name
                                             </p>
                                           </div>
-                                          {/* <div className="jake-dawson1">
-                                              {user?.firstName}
-                                            </div> */}
+                                          <div className="jake-dawson1">
+                                            {details?.fullName}
+                                          </div>
                                           <div className="jake-dawson1">
                                             {/* {userManagement?.firstName} */}
                                           </div>
@@ -96,9 +101,9 @@ const FeedbackDetails = () => {
                                             Email Address
                                           </div>
                                           <div className="frame-parent">
-                                            {/* <div className="a-b-c">
-                                                {user?.mobile}
-                                              </div> */}
+                                            <div className="a-b-c">
+                                              {details?.email}
+                                            </div>
                                             <div className="a-b-c">
                                               {/* {userManagement?.email} */}
                                             </div>
@@ -107,12 +112,12 @@ const FeedbackDetails = () => {
 
                                         <div className="gender">
                                           <div className="phone-number1">
-                                            Event Type
+                                            Artist Type
                                           </div>
                                           <div className="frame-parent">
-                                            {/* <div className="a-b-c">
-                                                {user?.mobile}
-                                              </div> */}
+                                            <div className="a-b-c">
+                                              {details?.category}
+                                            </div>
                                             <div className="a-b-c">
                                               {/* {userManagement?.email} */}
                                             </div>
@@ -120,43 +125,38 @@ const FeedbackDetails = () => {
                                         </div>
 
                                         <div className="gender">
-                                          <div className="phone-number1">
+                                          {/* <div className="phone-number1">
                                             Artist
                                           </div>
                                           <div className="frame-parent">
-                                            {/* <div className="a-b-c">
-                                                {user?.mobile}
-                                              </div> */}
+                                       
                                             <div className="a-b-c">
-                                              {/* {userManagement?.email} */}
                                             </div>
-                                          </div>
+                                          </div> */}
                                         </div>
                                       </div>
                                       <div className="changepassword">
-                                        <div className="b-g">
+                                        {/* <div className="b-g">
                                           <div className="email">Last Name</div>
-                                          {/* <div className="jakesamplecom">
-                                              {user?.lastName}
-                                            </div> */}
+                                          
                                           <div className="jakesamplecom">
-                                            {/* {userManagement?.lastName} */}
+                                         
                                           </div>
-                                        </div>
+                                        </div> */}
                                         <div className="b-g">
                                           <div className="email">Gender</div>
-                                          {/* <div className="jakesamplecom">
-                                              {user?.lastName}
-                                            </div> */}
+                                          <div className="jakesamplecom">
+                                            {details?.gender}
+                                          </div>
                                           <div className="jakesamplecom">
                                             {/* {userManagement?.userManagementDate} */}
                                           </div>
                                         </div>
                                         <div className="b-g">
                                           <div className="email">Date</div>
-                                          {/* <div className="jakesamplecom">
-                                              {user?.lastName}
-                                            </div> */}
+                                          <div className="jakesamplecom">
+                                            {extractDate(details?.createdAt)}
+                                          </div>
                                           <div className="jakesamplecom">
                                             {/* {userManagement?.userManagementDate} */}
                                           </div>
@@ -165,11 +165,12 @@ const FeedbackDetails = () => {
                                     </div>
                                   </div>
 
-                                  <Row justify={"center"} style={{width:"100%"}}>
-                                    <Col xs={12} md={8} lg={6} >
-                                      <Form.Item
-                                        
-                                      >
+                                  <Row
+                                    justify={"center"}
+                                    style={{ width: "100%" }}
+                                  >
+                                    <Col xs={12} md={8} lg={6}>
+                                      <Form.Item>
                                         <Button
                                           type="submit"
                                           htmlType="submit"
@@ -177,6 +178,7 @@ const FeedbackDetails = () => {
                                           style={{
                                             cursor: "pointer",
                                           }}
+                                          onClick={()=>{navigate(`/artistManagement/editArtist/${details?._id}` , {state : {details}})}}
                                         >
                                           {loading
                                             ? "Loading..."

@@ -7,7 +7,7 @@ import { COMPANY, PROFILE, USER_AUTH } from "../../config/constants/api";
 import { addUser , addProfileDetails } from "../../redux/slice/authSlice";
 import swal from "sweetalert";
 import { Get } from "../../config/api/get";
-import socket from "../../config/socket";
+// import socket from "../../config/socket";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 
 function Login() {
@@ -24,19 +24,7 @@ function Login() {
     }
   }, [user, token]);
 
-  const checkProfile = (token)=>{
-    Get(PROFILE.getMyProfile, token).then((response)=>{
-      if(response?.status){
-        dispatch(addProfileDetails({details : response?.data}))
-      }
-      else{
-        dispatch(addProfileDetails({details : null}))
-      } 
-    }).catch((err)=>{
-      console.log(err, "Error Fetching Profile Details")
-      dispatch(addProfileDetails({details : null}))
-    })
-  }
+
   const onFinish = (values) => {
     setLoading(true);
     let data = {
@@ -48,10 +36,8 @@ function Login() {
       .then((response) => {
         setLoading(false);
         dispatch(
-          addUser({ user: response?.data?.user, token: response?.data?.token })
+          addUser({ user: response?.data?.organization, token: response?.data?.token })
           );
-          socket.emit('setupAdmin' , response?.data?.user)
-          checkProfile(response?.data?.token, response?.data?.user?._id)
           navigate("/");
       })
       .catch((err) => {

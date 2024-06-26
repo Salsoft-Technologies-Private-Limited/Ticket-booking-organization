@@ -81,3 +81,11 @@ export const calculateReviewsAverage = (reviews) => {
  export const disabledDate = (current) => {
     return current && current < moment().startOf('day');
   };
+
+ export const convertTo12HourFormat = (time) => {
+    const [hour, minute, second] = time.split(':');
+    let hours = parseInt(hour, 10);
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12; // convert to 12-hour format
+    return `${hours}:${minute} ${ampm}`;
+  };

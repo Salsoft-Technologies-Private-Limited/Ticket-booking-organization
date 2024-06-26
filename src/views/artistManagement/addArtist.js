@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router";
 import { useSelector } from "react-redux";
-import { ADMIN, COMPANY, UPLOADS_URL } from "../../config/constants/api";
+import { ADMIN, ARTIST, COMPANY, UPLOADS_URL } from "../../config/constants/api";
 import DashbordSidebar from "../../components/DashboardSidebar";
 import { Get } from "../../config/api/get";
 import { Put } from "../../config/api/put";
@@ -29,63 +29,82 @@ import avatar from "../../assets/avatar.png";
 import swal from "sweetalert";
 import { userManagementDate } from "../../components/Data/data";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Post } from "../../config/api/post";
 
 function AddArtist() {
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-2",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-3",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-4",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-xxx",
-      percent: 50,
-      name: "image.png",
-      status: "uploading",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-5",
-      name: "image.png",
-      status: "error",
-    },
-  ]);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
+  const [form] = Form.useForm();
+  
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageObject, setImageObject] = useState(null);
+  const [isBanned, setIsBanned] = useState(false);
+  const [userManagement, setUserManagement] = useState(
+    userManagementDate.find((item) => item.id == id)
+  );
+  const token = useSelector((state) => state.user.userToken);
+  const navigate = useNavigate();
+  const handleChange = () => {};
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
   };
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  const { TextArea } = Input;
+  const onFinish = (values) => {
+    if (!imageObject) {
+      swal("Error", "Artist Image is Required", "error");
+      return;
+    }
+    setLoading(true);
+    let data = new FormData();
+    data.append("fullName", values?.fullName);
+    data.append("email", values?.email);
+    data.append("eventType", values?.eventType);
+    data.append("category", values?.category);
+    data.append("gender", values?.gender);
+    data.append("image", imageObject);
+    Post(ARTIST.addArtist, data, token, null, "multipart")
+      .then((response) => {
+        setLoading(false);
+        swal("Success!", response?.message, "success");
+        navigate("/artistManagement");
+      })
+      .catch((err) => {
+        let message = err?.response?.data?.message;
+        setLoading(false);
+        console.log(":::;", err);
+        if (message) swal("Oops!", message, "error");
+      });
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+  const handleChangepro = (info) => {
+    setLoading(true);
+    getBase64(
+      info?.fileList[info?.fileList?.length - 1]?.originFileObj,
+      (url) => {
+        setImageObject(
+          info?.fileList[info?.fileList?.length - 1]?.originFileObj
+        );
+        setLoading(false);
+        setImageUrl(url);
+      }
+    );
+  };
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+  const beforeUpload = (file) => {
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      message.error("Invalid Uplaod, You can only upload image files!");
+    }
+    return isImage;
+  };
   const uploadButton = (
     <button
       style={{
@@ -94,60 +113,17 @@ function AddArtist() {
       }}
       type="button"
     >
-      <PlusOutlined />
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div
         style={{
           marginTop: 8,
         }}
       >
-        Upload
+        Upload Picture
       </div>
     </button>
   );
-  const { id } = useParams();
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [isBanned, setIsBanned] = useState(false);
-  const [userManagement, setUserManagement] = useState(
-    userManagementDate.find((item) => item.id == id)
-  );
-  const token = useSelector((state) => state.user.userToken);
-  const navigate = useNavigate();
-  // const getUserDetails = () => {
-  //   setLoading(true);
-  //   Get(`${ADMIN.getUser}${id}`, token)
-  //     .then((response) => {
-  //       setUser(response?.data?.user);
-  //       setProfile(response?.data?.profile);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.log("Error fetching user details", err);
-  //       setLoading(false);
-  //     });
-  // };
-  // useEffect(() => {
-  //   getUserDetails();
-  // }, []);
-  const banUser = (id, status) => {
-    Put(`${ADMIN.toggleUser}${id}`, token, { status })
-      .then((response) => {
-        if (response.status) {
-          swal("System Alert!", response?.message, "success");
-          setIsBanned(!isBanned);
-        }
-      })
-      .catch((err) => {
-        let message = err?.response?.data?.message;
-        console.log(":::;", err);
-        if (message) swal("Oops!", message, "error");
-      });
-  };
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
-  };
-  const { TextArea } = Input;
+
   return (
     <div className="shop-page">
       <Row style={{ width: "100%", justifyContent: "center" }}>
@@ -187,6 +163,10 @@ function AddArtist() {
                                       initialValues={{
                                         remember: true,
                                       }}
+                                      onFinish={onFinish}
+                                      onFinishFailed={onFinishFailed}
+                                      autoComplete="off"
+                                      form={form}
                                     >
                                       <Row
                                         style={{ width: "100%" }}
@@ -195,7 +175,7 @@ function AddArtist() {
                                         <Col xs={24} md={12}>
                                           <Form.Item
                                             label="Full Name"
-                                            name="fullName*"
+                                            name="fullName"
                                             required={true}
                                           >
                                             <Input
@@ -223,31 +203,31 @@ function AddArtist() {
 
                                         <Col lg={12} md={12} xs={24}>
                                           <Form.Item
-                                            label="Facility"
-                                            name="facility"
+                                            label="Category"
+                                            name="category"
                                             required={true}
                                           >
                                             <Select
-                                              defaultValue="Facility"
+                                              defaultValue="Category"
                                               onChange={handleChange}
                                               options={[
                                                 {
-                                                  value: "jack",
-                                                  label: "Jack",
+                                                  value: "Musician",
+                                                  label: "Musician",
                                                 },
                                                 {
-                                                  value: "lucy",
-                                                  label: "Lucy",
+                                                  value: "Comedian",
+                                                  label: "Comedian",
                                                 },
                                                 {
-                                                  value: "Yiminghe",
-                                                  label: "yiminghe",
+                                                  value: "Priest",
+                                                  label: "Priest",
                                                 },
                                                 {
-                                                  value: "disabled",
-                                                  label: "Disabled",
-                                                  disabled: true,
-                                                },
+                                                  value: "Singer",
+                                                  label: "Singer",
+                                                }
+                                                
                                               ]}
                                             />
                                           </Form.Item>
@@ -255,7 +235,7 @@ function AddArtist() {
                                         <Col lg={12} md={12} xs={24}>
                                           <Form.Item
                                             label="Gender"
-                                            name="Gender"
+                                            name="gender"
                                             required={true}
                                           >
                                             <Select
@@ -263,55 +243,47 @@ function AddArtist() {
                                               onChange={handleChange}
                                               options={[
                                                 {
-                                                  value: "Male",
+                                                  value: "MALE",
                                                   label: "Male",
                                                 },
                                                 {
-                                                  value: "Female",
+                                                  value: "FEMALE",
                                                   label: "Female",
+                                                },
+                                                {
+                                                  value: "OTHER",
+                                                  label: "Other",
                                                 },
                                               ]}
                                             />
                                           </Form.Item>
                                         </Col>
-
-                                        <Col lg={12} md={12} xs={24}>
-                                          <Form.Item
-                                            label="Date"
-                                            name="Date"
-                                            required={true}
-                                          >
-                                            <DatePicker
-                                              onChange={onChange}
-                                              size="large"
-                                              className="web-input"
-                                              required={true}
-                                            />
-                                          </Form.Item>
-                                        </Col>
-                                        <Col lg={12} md={12} xs={24}>
+                                        <Col lg={24} md={24} xs={24}>
                                           <Form.Item
                                             label="Event Type"
                                             name="eventType"
                                             required={true}
                                           >
                                             <Select
-                                              defaultValue="Select"
-                                              onChange={handleChange}
+                                              defaultValue="Event Type"
+                                              // onChange={handleChange}
                                               options={[
                                                 {
-                                                  value: "Male",
-                                                  label: "Male",
+                                                  value: "Playground",
+                                                  label: "Playground",
                                                 },
                                                 {
-                                                  value: "Female",
-                                                  label: "Female",
+                                                  value: "Attractions",
+                                                  label: "Attractions",
+                                                },
+                                                {
+                                                  value: "Entertainment",
+                                                  label: "Entertainment",
                                                 },
                                               ]}
                                             />
                                           </Form.Item>
                                         </Col>
-
                                         <Col xs={24}>
                                           <Form.Item
                                             label="Upload Image"
@@ -320,52 +292,46 @@ function AddArtist() {
                                           >
                                             <>
                                               <Upload
-                                                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                                                listType="picture-card"
-                                                // fileList={fileList}
-                                                onPreview={handlePreview}
-                                                onChange={handleChange}
+                                                name="image"
+                                                showUploadList={false}
+                                                style={{ position: "relative" }}
+                                                onChange={handleChangepro}
+                                                beforeUpload={beforeUpload}
                                               >
-                                                {fileList.length >= 8
-                                                  ? null
-                                                  : uploadButton}
+                                                {" "}
+                                                <div
+                                                  style={{
+                                                    height: "300px",
+                                                    width: "100%",
+                                                    border: "1px dotted gray",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    cursor: "pointer",
+                                                  }}
+                                                >
+                                                  {imageUrl ? (
+                                                    <img
+                                                      src={imageUrl}
+                                                      alt="avatar"
+                                                      style={{
+                                                        maxWidth: "100%",
+                                                        height: "295px",
+                                                        objectPosition:
+                                                          "center",
+                                                        objectFit: "cover",
+                                                      }}
+                                                    />
+                                                  ) : (
+                                                    uploadButton
+                                                  )}
+                                                </div>{" "}
                                               </Upload>
                                             </>
                                           </Form.Item>
                                         </Col>
 
-                                        <Col xs={24}>
-                                          <Form.Item
-                                            label="Artist"
-                                            name="artist"
-                                            required={true}
-                                          >
-                                            <Select
-                                              defaultValue="Artist"
-                                              onChange={handleChange}
-                                              options={[
-                                                {
-                                                  value: "jack",
-                                                  label: "Jack",
-                                                },
-                                                {
-                                                  value: "lucy",
-                                                  label: "Lucy",
-                                                },
-                                                {
-                                                  value: "Yiminghe",
-                                                  label: "yiminghe",
-                                                },
-                                                {
-                                                  value: "disabled",
-                                                  label: "Disabled",
-                                                  disabled: true,
-                                                },
-                                              ]}
-                                            />
-                                          </Form.Item>
-                                        </Col>
-
+                                      
                                         <div
                                           style={{
                                             textAlign: "center",

@@ -18,14 +18,16 @@ import DashbordSidebar from "../../components/DashboardSidebar";
 import { AiOutlineEye } from "react-icons/ai";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { Get } from "../../config/api/get";
-import { ADMIN } from "../../config/constants/api";
+import { ADMIN, EVENT, UPLOADS_URL } from "../../config/constants/api";
 import { useDebouncedCallback } from "use-debounce";
 import { userManagementDate } from "../../components/Data/data";
 import moment from "moment";
+import { convertTo12HourFormat, extractDate } from "../../config/helpers";
 
 const DropZoneLogs = () => {
   const token = useSelector((state) => state.user.userToken);
-  const [users, setUsers] = useState(null);
+  const user = useSelector((state) => state.user.userData);
+  const [events, setEvents] = useState(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -44,9 +46,9 @@ const DropZoneLogs = () => {
   });
   const navigate = useNavigate();
 
-  const getUsers = (pageNumber, pageSize, from, to, keyword) => {
+  const getEvents = (pageNumber, pageSize, from, to, keyword) => {
     setLoading(true);
-    Get(ADMIN.getUsers, token, {
+    Get(`${EVENT.getOrganizationEvents}${user?._id}`, token, {
       from,
       to,
       keyword,
@@ -57,7 +59,7 @@ const DropZoneLogs = () => {
     })
       .then((response) => {
         if (response?.data?.docs) {
-          setUsers(response?.data?.docs);
+          setEvents(response?.data?.docs);
           setPaginationConfig({
             pageNumber: response?.data?.page,
             limit: response?.data?.limit,
@@ -68,12 +70,12 @@ const DropZoneLogs = () => {
         }
       })
       .catch((err) => {
-        console.log("Error Fetching Loads", err);
+        console.log("Error Fetching Events", err);
         setLoading(false);
       });
   };
   useEffect(() => {
-    getUsers();
+    getEvents();
   }, []);
 
   const startIndex =
@@ -82,7 +84,7 @@ const DropZoneLogs = () => {
     startIndex + paginationConfig.limit - 1,
     paginationConfig.totalDocs
   );
-  const message = users
+  const message = events
     ? `Showing records ${endIndex} of ${paginationConfig.totalDocs}`
     : "Showing records 0 of 0";
 
@@ -91,7 +93,7 @@ const DropZoneLogs = () => {
       ...paginationConfig,
       pageNumber: pageNumber,
     });
-    getUsers(pageNumber, paginationConfig.limit);
+    getEvents(pageNumber, paginationConfig.limit);
   };
 
   const handleSearch = useDebouncedCallback((value) => {
@@ -99,7 +101,7 @@ const DropZoneLogs = () => {
       ...filter,
       keyword: value,
     });
-    getUsers(
+    getEvents(
       paginationConfig.pageNumber,
       paginationConfig.limit,
       null,
@@ -163,14 +165,14 @@ const DropZoneLogs = () => {
       to = moment(filter?.to?.$d).format("YYYY-MM-DD");
     }
     if (from || to) {
-      getUsers(paginationConfig.pageNumber, paginationConfig.limit, from, to);
+      getEvents(paginationConfig.pageNumber, paginationConfig.limit, from, to);
     } else {
       return;
     }
   };
   const handleClear = () => {
     resetFilter();
-    getUsers();
+    getEvents();
   };
 
   const itemRender = (_, type, originalElement) => {
@@ -192,26 +194,84 @@ const DropZoneLogs = () => {
       render: (value, item, index) => (index < 9 && "0") + (index + 1),
     },
     {
-      title: "First Name",
-      dataIndex: "firstName",
-      key: "firstName",
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (value, item, index) => (
+        <img
+          src={UPLOADS_URL + value}
+          alt="event image"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+      ),
     },
     {
-      title: "Last Name",
-      dataIndex: "lastName",
-      key: "lastName",
+      title: "Event Title",
+      dataIndex: "title",
+      key: "title",
     },
-
     {
-      title: "Email Address",
-      dataIndex: "email",
-      key: "email",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      render: (value, item, index) =>
+        value.length > 25 ? value.slice(0, 25) + "..." : value,
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      render: (value, item, index) => extractDate(value),
+    },
+    {
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
+      render: (value, item, index) => convertTo12HourFormat(value),
+    },
+    {
+      title: "Location",
+      dataIndex: "location",
+      key: "location.address",
+      render: (value, item, index) => value.address,
+    },
+    {
+      title: "Ticket Price",
+      dataIndex: "price",
+      key: "price",
+      render: (value, item, index) => "USD " + value,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (item) => (
+        <>
+          {item === "UPCOMING" ? (
+            <span style={{ color: "#DD9F00" }}>{item}</span>
+          ) : item === "ONGOING" ? (
+            <span style={{ color: "#2D308B" }}>{item}</span>
+          ) : item === "COMPLETED" ? (
+            <span style={{ color: "#00D640" }}>{item}</span>
+          ) : item === "CANCELLED" ? (
+            <span style={{ color: "red" }}>{item}</span>
+          ) : (
+            <span>{item}</span>
+          )}
+        </>
+      ),
     },
 
     {
       title: "Action",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
       render: (value, item, index) => (
         <AiOutlineEye
           style={{ fontSize: "18px", color: "grey", cursor: "pointer" }}
@@ -284,80 +344,82 @@ const DropZoneLogs = () => {
                   <section className="side-menu-parent">
                     <DashbordSidebar />
                     <div className="about-us-section">
-                    <Row style={{ padding: "10px 20px" }}>
-                                      <Col xs={24} md={12}>
-                                        <h3 className="heading-28">
-                                          Event Management
-                                        </h3>
-                                      </Col>
-                                      <Col
-                                        xs={24}
-                                        md={12}
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "flex-end",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Popover
-                                          content={filterContent}
-                                          trigger="click"
-                                          open={open}
-                                          onOpenChange={handleOpenChange}
-                                          placement="bottomRight"
-                                          arrow={false}
-                                        >
-                                          <Button
-                                            shape="circle"
-                                            style={{
-                                              padding: "12px 12px 5px",
-                                              height: "auto",
-                                              backgroundColor: "#7F00FF",
-                                            }}
-                                          >
-                                            <FaFilter
-                                              style={{
-                                                fontSize: "16px",
-                                                color: "white",
-                                              }}
-                                            />
-                                          </Button>
-                                        </Popover>
-                                        &emsp;
-                                        <Input
-                                          style={{ width: "250px" }}
-                                          className="mainInput dashInput table-search"
-                                          placeholder="Search Here"
-                                          onChange={(e) =>
-                                            handleSearch(e.target.value)
-                                          }
-                                          suffix={
-                                            <FaSearch
-                                              style={{
-                                                color: "grey",
-                                                fontSize: 16,
-                                                cursor: "pointer",
-                                              }}
-                                              // onClick={() =>
-                                              //   getOrders(
-                                              //     1,
-                                              //     paginationConfig.limit,
-                                              //     filter.keyword
-                                              //   )
-                                              // }
-                                            />
-                                          }
-                                          // onPressEnter={(e) =>
-                                          //   getOrders(
-                                          //     1,
-                                          //     paginationConfig.limit,
-                                          //     filter.keyword
-                                          //   )
-                                          // }
-                                        />
-                                        <Button className="web-btn" onClick={() => navigate("/createEvent")} style={{  margin:"0 0 0 10px" }}>CREATE EVENT</Button>
-                                      </Col>
-                                    </Row>
+                      <Row style={{ padding: "10px 20px" }}>
+                        <Col xs={24} md={12}>
+                          <h3 className="heading-28">Event Management</h3>
+                        </Col>
+                        <Col
+                          xs={24}
+                          md={12}
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Popover
+                            content={filterContent}
+                            trigger="click"
+                            open={open}
+                            onOpenChange={handleOpenChange}
+                            placement="bottomRight"
+                            arrow={false}
+                          >
+                            <Button
+                              shape="circle"
+                              style={{
+                                padding: "12px 12px 5px",
+                                height: "auto",
+                                backgroundColor: "#7F00FF",
+                              }}
+                            >
+                              <FaFilter
+                                style={{
+                                  fontSize: "16px",
+                                  color: "white",
+                                }}
+                              />
+                            </Button>
+                          </Popover>
+                          &emsp;
+                          <Input
+                            style={{ width: "250px" }}
+                            className="mainInput dashInput table-search"
+                            placeholder="Search By Title Here.."
+                            onChange={(e) => handleSearch(e.target.value)}
+                            suffix={
+                              <FaSearch
+                                style={{
+                                  color: "grey",
+                                  fontSize: 16,
+                                  cursor: "pointer",
+                                }}
+                                // onClick={() =>
+                                //   getOrders(
+                                //     1,
+                                //     paginationConfig.limit,
+                                //     filter.keyword
+                                //   )
+                                // }
+                              />
+                            }
+                            // onPressEnter={(e) =>
+                            //   getOrders(
+                            //     1,
+                            //     paginationConfig.limit,
+                            //     filter.keyword
+                            //   )
+                            // }
+                          />
+                          <Button
+                            className="web-btn"
+                            onClick={() => navigate("/createEvent")}
+                            style={{ margin: "0 0 0 10px" }}
+                          >
+                            CREATE EVENT
+                          </Button>
+                        </Col>
+                      </Row>
                       <div className="">
                         <Row justify="center">
                           <Col xs={24} md={24} xl={24}>
@@ -365,8 +427,6 @@ const DropZoneLogs = () => {
                               <Row align="middle" gutter={16}>
                                 <Col lg={24}>
                                   <div className="boxDetails">
-                                   
-
                                     <Row
                                       style={{ padding: 20, overflow: "auto" }}
                                     >
@@ -386,8 +446,8 @@ const DropZoneLogs = () => {
                                         <Table
                                           className="styledTable"
                                           columns={columns}
-                                          // dataSource={users}
-                                          dataSource={userManagementDate}
+                                          dataSource={events}
+                                          // dataSource={userManagementDate}
                                           pagination={false}
                                         />
                                       )}

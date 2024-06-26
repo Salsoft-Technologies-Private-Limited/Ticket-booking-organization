@@ -29,7 +29,7 @@ function ForgetPassword() {
       email,
       code,
       password: values.password,
-      type: "ADMIN",
+      type: "ORGANIZATION",
     })
       .then((response) => {
         if (response?.status) {

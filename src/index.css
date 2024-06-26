@@ -110,6 +110,42 @@ h6 {
   align-items: center;
 }
 
+.mainbtn {
+  background: var(
+    --Linear,
+    linear-gradient(180deg, #7f00ff 0%, #a020f0 100%)
+  ) !important;
+  color: #fff;
+  font-size: 14.5px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+  border: 0;
+  padding: 10px 20px;
+  height: auto;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -ms-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.mainbtn:hover {
+  opacity: 0.8;
+  color: #fff !important;
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -ms-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.mainbtn svg {
+  margin: 0px 10px;
+  font-size: 24px;
+}
 /* .banner-section {
   padding: 30px 0;
   position: relative;
@@ -160,6 +196,15 @@ h6 {
   margin: 0;
 }
 
+.location-drop .autocomplete-dropdown-container{
+  position: absolute;
+  max-width: 340px;
+  z-index: 9;
+}
+
+.location-drop .suggestion-item.googleSuggestion {
+  padding: 5px 10px;
+}
 /*=============================================================================== text sizes end ===========================================================================*/
 
 /* ---------------------------------------------------
@@ -1952,7 +1997,7 @@ ul.shopping-cart-items {
   help page Start
 ----------------------------------------------------- */
 .help-frame {
-  background-image: url(../src/assets/help-frame.png);
+  background-image: url(../public/images1/contact-bg.png);
   padding: 20px;
   background-size: cover;
   height: 100%;
@@ -3744,6 +3789,11 @@ text-transform: uppercase;
   height: 300px !important;
 }
 
+.auth-box .ant-upload-select {
+  width: auto !important;
+  height: auto !important;
+}
+
 /*============================ profile css end =========================================*/
 .gray-bg {
   background-color: #f2f2f2;
@@ -3925,14 +3975,13 @@ text-transform: uppercase;
   min-width: 154px;
   width: 154px;
   border-style: dotted;
-  border-radius: 15px;
+  border-radius: 6px;
   width: 154px;
   background: #fff;
   border-color: #c4c4c4;
   box-shadow: 0px 3px 6px rgb(100 100 100 / 12%);
   text-align: center;
-  height: 135px;
-  height: 135px;
+  height: 45px;
   display: flex !important;
   justify-content: center;
   align-items: center;
@@ -4145,15 +4194,17 @@ text-transform: uppercase;
   max-width: 220px;
 }
 .wrapper-group-1000001858{
-  width: 80px;
-  height: 80px;
+  width: 150px;
+  height: 150px;
   display: block;
   margin: 0 auto 35px;
 }
 .wrapper-group-1000001858 img{
-  width: 80px !important;
-  height: 80px;
+  width: 150px !important;
+  height: 150px;
   border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 /*============================ Admin Actor end ==========================================================================================*/
 

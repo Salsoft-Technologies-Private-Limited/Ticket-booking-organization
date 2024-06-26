@@ -44,6 +44,7 @@ import RoomDetails from "../../views/ticketsManagement/roomDetails";
 import ArtistManagement from "../../views/artistManagement";
 import ArtistDetails from "../../views/artistManagement/artistDetails";
 import AddArtist from "../../views/artistManagement/addArtist";
+import EditArtist from "../../views/artistManagement/editArtist";
 import Support from "../../views/Support";
 import DriverDetails from "../../views/Support/driverDetails";
 import VendorManagement from "../../views/vendorManagement";
@@ -54,11 +55,14 @@ import ProductDetails from "../../views/productManagement/productDetails";
 import EditProduct from "../../views/productManagement/editProduct";
 import OrderManagement from "../../views/orderManagement";
 import OrderDetail from "../../views/orderManagement/myorderInfo/orderDetail";
+import Eventreservation from "../../views/eventManagement/reservationLogs";
+import EventreservationDetails from "../../views/eventManagement/reservationDetails";
+
 
 const MyRouter = () => {
   return (
     // <BrowserRouter basename="badshah_tickets_admin">
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/login" index element={<Login />} />
         <Route path="/signUP" index element={<SignUp />} />
@@ -304,6 +308,7 @@ const MyRouter = () => {
             </ClientLayout>
           }
         />
+         
         <Route
           path="/eventManagement/:id"
           index
@@ -313,6 +318,30 @@ const MyRouter = () => {
               headerStyle={{ height: { base: "40px", md: 14 } }}
             >
               <EventDetails />
+            </ClientLayout>
+          }
+        />
+        <Route
+          path="/eventManagement/reservationLogs"
+          index
+          element={
+            <ClientLayout
+              head={{ title: "Dashboard", description: "Some Description." }}
+              headerStyle={{ height: { base: "40px", md: 14 } }}
+            >
+              <Eventreservation />
+            </ClientLayout>
+          }
+        />
+         <Route
+          path="/eventManagement/reservationLogs/:id"
+          index
+          element={
+            <ClientLayout
+              head={{ title: "Dashboard", description: "Some Description." }}
+              headerStyle={{ height: { base: "40px", md: 14 } }}
+            >
+              <EventreservationDetails />
             </ClientLayout>
           }
         />
@@ -505,6 +534,18 @@ const MyRouter = () => {
               headerStyle={{ height: { base: "40px", md: 14 } }}
             >
               <ArtistDetails />
+            </ClientLayout>
+          }
+        />
+        <Route
+          path="/artistManagement/editArtist/:id"
+          index
+          element={
+            <ClientLayout
+              head={{ title: "Dashboard", description: "Some Description." }}
+              headerStyle={{ height: { base: "40px", md: 14 } }}
+            >
+              <EditArtist />
             </ClientLayout>
           }
         />

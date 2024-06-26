@@ -2,7 +2,7 @@ import { Layout  } from "antd";
 
 import ProfileInfo from "../../views/profile/profileInfo";
 import { useEffect } from "react";
-import { io } from 'socket.io-client'
+// import { io } from 'socket.io-client'
 function DropZone() {
   return (
     <Layout

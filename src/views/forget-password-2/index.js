@@ -22,7 +22,6 @@ function ForgetPassword2() {
   const handleSubmit = () => {
     Post(RESET.verifyCode, { email: email, code: code }, token)
       .then((response) => {
-        console.log(response);
         if (response?.status) {
           swal("Success", response?.message, "success");
         }

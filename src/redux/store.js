@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
 })
 
 const persistConfig = {
-  key: 'sky_diving_admin',
+  key: 'ticket_booking_organization',
   storage,
 }
 

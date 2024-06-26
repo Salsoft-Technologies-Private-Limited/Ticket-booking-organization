@@ -39,7 +39,7 @@ async function Post(path, postData, token, paramObj, contentType) {
     const config = {
       // headers: { Authorization: `Bearer ${token}` },
       headers : headers,
-      params:  paramObj ,
+      params: { paramObj },
     };
     const { data } = await axios.post(url, postData, config);
     return data;

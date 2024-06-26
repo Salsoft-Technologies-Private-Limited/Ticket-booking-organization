@@ -18,7 +18,7 @@ import swal from "sweetalert";
 import { PROFILE, UPLOADS_URL } from "../../../config/constants/api";
 import { Put } from "../../../config/api/put";
 import moment from "moment";
-import { addProfileDetails } from "../../../redux/slice/authSlice";
+import { addUser } from "../../../redux/slice/authSlice";
 import { FaCamera } from "react-icons/fa";
 import dayjs from "dayjs";
 
@@ -40,39 +40,25 @@ const DropzoneFiltercards = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [form] = Form.useForm();
   const token = useSelector((state) => state.user.userToken);
-  const profileDetails = useSelector((state) => state.user.profileDetails);
+  const userData = useSelector((state) => state.user.userData);
   useEffect(() => {
     form.setFieldsValue({
-      FullName: profileDetails?.fullName,
-      email: profileDetails?.email,
-      Gender: profileDetails?.gender,
-      Country: profileDetails.location?.country,
-      City: profileDetails.location?.city,
-      State: profileDetails.location?.state,
-      Street: profileDetails.location?.street,
-      DOB: dayjs(profileDetails.dateOfBirth),
+      FirstName: userData?.firstName,
+      LastName: userData?.lastName,
+      Email: userData?.email,
+      Phone: userData?.phone,
     });
   }, []);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!profileDetails) {
-      navigate("/createProfile");
-    }
-  }, []);
+
   const navigate = useNavigate();
   const onFinish = (values) => {
-    const { Country, City, State, Street, FullName, Gender, Phone, DOB } =
-      values;
+    const { FirstName, LastName, Phone } = values;
     const formValuesChanged = () => {
       return (
-        profileDetails?.fullName !== FullName ||
-        profileDetails?.location?.street !== Street ||
-        profileDetails?.location?.country !== Country ||
-        profileDetails?.location?.city !== City ||
-        profileDetails?.location?.state !== State ||
-        profileDetails?.gender !== Gender ||
-        !dayjs(profileDetails?.dateOfBirth).isSame(DOB) ||
-        profileDetails?.phone !== Phone ||
+        userData?.firstName !== FirstName ||
+        userData?.LastName !== LastName ||
+        userData?.phone !== Phone ||
         imageObject
       );
     };
@@ -81,58 +67,25 @@ const DropzoneFiltercards = () => {
       if (imageObject) {
         data.append("image", imageObject);
       }
-      if (FullName) {
-        data.append("fullName", FullName);
+      if (FirstName) {
+        data.append("firstName", FirstName);
       }
-      if (DOB) {
-        data.append("dateOfBirth", moment(DOB?.$d).format("YYYY-MM-DD"));
+      if (LastName) {
+        data.append("lastName", LastName);
       }
       if (Phone) {
-        data.append("mobile", Phone);
+        data.append("phone", Phone);
       }
-      if (Gender) {
-        data.append("gender", Gender);
-      }
-      data.append(
-        "location",
-        JSON.stringify({
-          country: Country ? Country : profileDetails?.location?.country,
-          city: City ? City : profileDetails?.location?.city,
-          state: State ? State : profileDetails?.location?.state,
-          street: Street ? Street : profileDetails?.location?.street,
-        })
-      );
-      Put(PROFILE.updateMyProfile, token, data, {}, "multipart")
+
+      Put(PROFILE.editProfile, token, data, {}, "multipart")
         .then((response) => {
           if (response.status) {
-            console.log(response)
+            dispatch(
+              addUser({ user: response?.data, token: token })
+            );
             form.resetFields();
             swal("Success", "Profile Updated Successfully", "success");
-            dispatch(
-              addProfileDetails({
-                details: {
-                  fullName: FullName ? FullName : profileDetails.fullName,
-                  gender: Gender ? Gender : profileDetails.gender,
-                  dateOfBirth: DOB
-                    ? moment(DOB?.$d).format("YYYY-MM-DD")
-                    : profileDetails.dateOfBirth,
-                  phone: Phone ? Phone : profileDetails.phone,
-                  location: {
-                    country: Country
-                      ? Country
-                      : profileDetails?.location?.country,
-                    city: City ? City : profileDetails?.location?.city,
-                    state: State ? State : profileDetails?.location?.state,
-                    street: Street ? Street : profileDetails?.location?.street,
-                  },
-                  image: response?.data?.image
-                    ? response?.data?.image
-                    : profileDetails?.image,
-                  email: profileDetails.email,
-                },
-              })
-            );
-            navigate("/Profile");
+            navigate("/profile");
           }
         })
         .catch((err) => {
@@ -183,7 +136,7 @@ const DropzoneFiltercards = () => {
                           justify={"space-between"}
                         >
                           <Col md={10} lg={10} xl={8}>
-                            <div className="wrapper-group-1000001858">
+                            <div className="wrapper-group-100000185">
                               <>
                                 <Upload
                                   name="image"
@@ -196,11 +149,13 @@ const DropzoneFiltercards = () => {
                                   <div
                                     style={{
                                       height: "300px",
-                                      border: "1px solid gray",
+                                      // border: "1px solid gray",
                                       display: "flex",
                                       justifyContent: "center",
                                       alignItems: "center",
                                       cursor: "pointer",
+                                      width: "100%",
+                                      objectFit: "cover",
                                     }}
                                   >
                                     {imageUrl ? (
@@ -214,9 +169,7 @@ const DropzoneFiltercards = () => {
                                       />
                                     ) : (
                                       <img
-                                        src={
-                                          UPLOADS_URL + profileDetails?.image
-                                        }
+                                        src={UPLOADS_URL + userData?.image}
                                         alt="avatar"
                                         style={{
                                           width: "100%",
@@ -236,74 +189,6 @@ const DropzoneFiltercards = () => {
                                     />
                                   </div>{" "}
                                 </Upload>
-
-                                {/* <div>
-                                  <div>
-                                    <input
-                                      id="media"
-                                      type="file"
-                                      accept="image/*"
-                                      style={{ display: "none" }}
-                                      onChange={handleImageChange}
-                                    />
-                                  </div>
-                                  <div style={{ marginTop: "1rem" }}>
-                                    {imageObject ? (
-                                      <div>
-                                        <img
-                                          src={URL.createObjectURL(imageObject)}
-                                          alt="Preview"
-                                          style={{
-                                            maxWidth: "100%",
-                                            maxHeight: "200px",
-                                            objectFit: "cover",
-                                            objectPosition: "center",
-                                          }}
-                                        />
-                                        <button onClick={handleRemoveImage}>
-                                          Remove Image
-                                        </button>
-                                      </div>
-                                    ) : (
-                                      <div
-                                        style={{
-                                          textAlign: "center",
-                                          // border: "2px solid black",
-                                          height: "350px",
-                                          cursor: "pointer",
-                                          display: "flex",
-                                          alignItems: "center",
-                                          justifyContent: "center",
-                                        }}
-                                        onClick={() =>
-                                          document
-                                            .getElementById("media")
-                                            .click()
-                                        }
-                                      >
-                                        <img
-                                          src={
-                                            UPLOADS_URL + profileDetails?.image
-                                          }
-                                          alt="avatar"
-                                          style={{
-                                            maxHeight: "360px",
-                                            filter: "blur(1px)",
-                                            objectFit: "cover",
-                                            objectPosition: "center",
-                                          }}
-                                        />
-                                        <FaCamera
-                                          style={{
-                                            position: "absolute",
-                                            color: "rgb(0,127,202)",
-                                            fontSize: "25px",
-                                          }}
-                                        />
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>  */}
                               </>
                             </div>
                           </Col>
@@ -330,25 +215,23 @@ const DropzoneFiltercards = () => {
                                     >
                                       <Col lg={12} md={12} xs={24}>
                                         <Form.Item
-                                          label="Full Name"
-                                          name="FullName"
+                                          label="First Name"
+                                          name="FirstName"
                                         >
                                           <Input
                                             size="large"
-                                            placeholder={
-                                              profileDetails?.fullName
-                                            }
                                             className="web-input"
                                           />
                                         </Form.Item>
                                       </Col>
                                       <Col lg={12} md={12} xs={24}>
-                                        <Form.Item label="Email" name="Email">
+                                        <Form.Item
+                                          label="Last Name"
+                                          name="LastName"
+                                        >
                                           <Input
                                             size="large"
-                                            placeholder={profileDetails?.email}
                                             className="web-input"
-                                            disabled
                                           />
                                         </Form.Item>
                                       </Col>
@@ -359,71 +242,18 @@ const DropzoneFiltercards = () => {
                                         >
                                           <Input
                                             size="large"
-                                            placeholder={profileDetails?.phone}
+                                            // placeholder={profileDetails?.phone}
                                             className="web-input"
                                             type="number"
                                           />
                                         </Form.Item>
                                       </Col>
                                       <Col lg={12} md={12} xs={24}>
-                                        <Form.Item label="Gender" name="Gender">
-                                          <Select placeholder="Select">
-                                            <Select.Option value="MALE">
-                                              Male
-                                            </Select.Option>
-                                            <Select.Option value="FEMALE">
-                                              Female
-                                            </Select.Option>
-                                            <Select.Option value="OTHERS">
-                                              Others
-                                            </Select.Option>
-                                          </Select>
-                                        </Form.Item>
-                                      </Col>
-                                      <Col lg={12} md={12} xs={24}>
-                                        <Form.Item
-                                          label="Country"
-                                          name="Country"
-                                        >
+                                        <Form.Item label="Email" name="Email">
                                           <Input
                                             size="large"
-                                            placeholder={
-                                              profileDetails?.location?.country
-                                            }
-                                            className="AuthFormInput"
-                                          />
-                                        </Form.Item>
-                                      </Col>
-                                      <Col lg={12} md={12} xs={24}>
-                                        <Form.Item label="City" name="City">
-                                          <Input
-                                            size="large"
-                                            placeholder={
-                                              profileDetails?.location?.city
-                                            }
-                                            className="AuthFormInput"
-                                          />
-                                        </Form.Item>
-                                      </Col>
-                                      <Col lg={12} md={12} xs={24}>
-                                        <Form.Item label="State" name="State">
-                                          <Input
-                                            size="large"
-                                            placeholder={
-                                              profileDetails?.location?.state
-                                            }
-                                            className="AuthFormInput"
-                                          />
-                                        </Form.Item>
-                                      </Col>
-                                      <Col lg={12} md={12} xs={24}>
-                                        <Form.Item label="Street" name="Street">
-                                          <Input
-                                            size="large"
-                                            placeholder={
-                                              profileDetails?.location?.street
-                                            }
-                                            className="AuthFormInput"
+                                            className="web-input"
+                                            disabled
                                           />
                                         </Form.Item>
                                       </Col>
