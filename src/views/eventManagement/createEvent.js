@@ -148,7 +148,7 @@ const CreateEvent = () => {
     }
     let data = new FormData();
     const location = {
-      coordinates: [latitude , longitude],
+      coordinates: [longitude , latitude ],
       address: address,
     };
     data.append("title", values?.title);
