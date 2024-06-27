@@ -197,7 +197,7 @@ const Calls = () => {
                           {/* {booking?.totalStay.toString().length < 2
                             ? "0" + booking?.totalStay + " Nights"
                             : booking?.totalStay + " Nights"} */}
-                            {booking?.visitors.length}
+                            {booking?.quantity}
                         </div>
                         <div className="checked-box">
                           <Image
