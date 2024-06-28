@@ -57,6 +57,7 @@ import OrderManagement from "../../views/orderManagement";
 import OrderDetail from "../../views/orderManagement/myorderInfo/orderDetail";
 import Eventreservation from "../../views/eventManagement/reservationLogs";
 import EventreservationDetails from "../../views/eventManagement/reservationDetails";
+import EventsEdit from "../../views/eventManagement/editEvent";
 
 const MyRouter = () => {
   return (
@@ -345,6 +346,20 @@ const MyRouter = () => {
               </ProtectedRoute>
           }
           />
+           <Route
+          path="/eventManagement/EventsEdit/:id"
+          index
+          element={
+            <ProtectedRoute>
+            <ClientLayout
+              head={{ title: "Dashboard", description: "Some Description." }}
+              headerStyle={{ height: { base: "40px", md: 14 } }}
+            >
+              <EventsEdit />
+            </ClientLayout>
+            </ProtectedRoute>
+          }
+        />
          <Route
           path="/eventManagement/reservationLogs/:id"
           index

@@ -82,7 +82,7 @@ export const EVENT = {
   getEvent: "/event/getEvent/",
   addEvent: "/event/addEvent",
   updateEvent: "/company/event/updateEvent/",
-  deleteEvent: "/company/event/deleteEvent/",
+  deleteEvent : "/event/deleteEvent/"
 };
 export const INSTRUCTOR = {
   getAllInstructors: "/company/getAllInstructors/",

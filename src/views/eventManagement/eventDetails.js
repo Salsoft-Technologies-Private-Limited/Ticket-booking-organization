@@ -26,7 +26,9 @@ import roomimg from "../../assets/main-p.png";
 import { Put } from "../../config/api/put";
 import swal from "sweetalert";
 import Slider from "react-slick";
-
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { FaEdit } from "react-icons/fa";
+import { Delete } from "../../config/api/delete";
 const StayUserDetails = () => {
   const [isBanned, setIsBanned] = useState(false);
   const token = useSelector((state) => state.user.userToken);
@@ -40,6 +42,22 @@ const StayUserDetails = () => {
 
   const slider1 = useRef(null);
   const slider2 = useRef(null);
+  const handleDelete = (eventId) => {
+    Delete(`${EVENT.deleteEvent}${eventId}`, token)
+      .then((response) => {
+        if (response?.status) {
+          swal("System Alert!", response?.message, "success");
+          navigate('/eventManagement')
+        }
+      })
+      .catch((err) => {
+        console.log("Error ", err);
+        const message = err?.response?.data?.message;
+        if (message) {
+          swal("Error", message, "error");
+        }
+      });
+  };
   const getEventDetails = () => {
     Get(`${EVENT.getEvent}${id}`, token)
       .then((response) => {
@@ -158,6 +176,31 @@ const StayUserDetails = () => {
                             <Col lg={14}>
                               <div className="">
                                 <div>
+                                <div className="delete-and-edit">
+                                              {/* <Button
+                                                type="danger"
+                                                className="edit-btn"
+                                                style={{ padding: "5px" }}
+                                                onClick={() =>
+                                                  navigate(
+                                                    `/eventManagement/EventsEdit/${details._id}`,
+                                                  {state:{details}})
+                                                }
+                                              >
+                                                <FaEdit />
+                                              </Button> */}
+                                              <Button
+                                                type="danger"
+                                                className="delete-btn"
+                                                onClick={() =>
+                                                  handleDelete(
+                                                    details._id
+                                                  )
+                                                }
+                                              >
+                                                <RiDeleteBin6Line />
+                                              </Button>
+                                            </div>
                                   <h4 className="text-26">{details?.title}</h4>
                                   <h3 className="purple-text">
                                     ${details?.price}
@@ -192,6 +235,7 @@ const StayUserDetails = () => {
                                     {details?.description}
                                   </p>
                                 </div>
+                                
                                 <Button
                                   className="mainbtn"
                                   style={{

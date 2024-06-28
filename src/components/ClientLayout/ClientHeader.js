@@ -48,6 +48,7 @@ import { Get } from "../../config/api/get";
 import { setCount } from "../../redux/slice/notificationSlice";
 import swal from "sweetalert";
 import { Put } from "../../config/api/put";
+import { ImageUrl } from "../../config/helper";
 
 const { Header } = Layout;
 
@@ -274,9 +275,15 @@ const ClientHeader = () => {
               <Image
                 preview={false}
                 alt={"Failed to load image"}
-                src={Logo}
+                src={ImageUrl('eventlogo.png')}
                 onClick={() => navigate("/")}
               />
+              {/* <Image
+                preview={false}
+                alt={"Failed to load image"}
+                src={Logo}
+                onClick={() => navigate("/")}
+              /> */}
             </Col>
             <Col xs={0} sm={0} xl={0} lg={0}>
               <Menu

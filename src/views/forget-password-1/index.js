@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
 
+
 function ForgetPassword() {
   const [form] = Form.useForm();
   const token = useSelector((state) => state.user.userToken);
@@ -35,6 +36,7 @@ function ForgetPassword() {
       style={{ backgroundColor: "#fff", minHeight: "100vh" }}
     >
       <div className="auth-banner">
+ 
         <Row style={{ width: "100%", justifyContent: "center" }}>
           <Col lg={8}>
             <div className="auth-box">

@@ -1,6 +1,6 @@
 export const ImageUrl = (image) => {
     let { PUBLIC_URL } = process.env;
-    return `${PUBLIC_URL}/images/${image}`;
+    return `${PUBLIC_URL}/images1/${image}`;
   };
 
   export const extractDate = (date) => {

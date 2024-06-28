@@ -597,10 +597,10 @@ const ContactUs = () => {
                                               <span>ABC Company Name</span>
                                               <p>
                                                 <FaPhoneVolume />{" "}
-                                                email@email.com
+                                                +1 (269) 888-8866
                                               </p>
                                               <p>
-                                                <MdEmail /> demo@gmail.com
+                                                <MdEmail /> Info@eventmela.com
                                               </p>
                                               <p>
                                                 <FaLocationDot /> 132 Dartmouth

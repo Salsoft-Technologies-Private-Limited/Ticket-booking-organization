@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import VerificationInput from "react-verification-input";
 import { BsArrowUpRightCircleFill } from "react-icons/bs";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 function ForgetPassword2() {
   const location = useLocation();
@@ -42,6 +43,12 @@ function ForgetPassword2() {
         <Row style={{ width: "100%", justifyContent: "center" }}>
           <Col lg={8}>
             <div className="auth-box" style={{ textAlign: "center" }}>
+      <div style={{ textAlign: "left" }}>
+                <FaArrowLeftLong
+                  onClick={() => navigate('/forget-password-1')}
+                  style={{ fontSize: "22px" , cursor:'pointer' }}
+                />
+              </div>
               <h2 className="auth-heading">Verification Code</h2>
               <p className="auth-p">
                 An Email Has Been Sent To You With A Verification Code
