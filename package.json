@@ -1,7 +1,8 @@
 {
   "name": "badshah_tickets_admin",
   "#homepage": "https://frontend2.customdev.solutions/badshah_tickets_admin/",
-  "homepage": "/ticket-booking/organization",
+  "-homepage": "/ticket-booking/organization",
+  "homepage": "/organization",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

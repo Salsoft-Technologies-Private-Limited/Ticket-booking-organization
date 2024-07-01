@@ -6,13 +6,13 @@ const { hostname } = window.location;
 const servers = {
   local: "http://localhost:3024",
   customDev: "https://react.customdev.solutions:3024",
-  live: "",
+  live: "https://react.customdev.solutions:3024",
 };
 
 var URL;
 if (NODE_ENV === "production" && hostname === "react.customdev.solutions")
   URL = servers.customDev;
-else if (NODE_ENV === "production" && hostname === "")
+else if (NODE_ENV === "production" && hostname.includes("eventmela.com"))
   URL = servers.live;
 else URL = servers.local;
 
