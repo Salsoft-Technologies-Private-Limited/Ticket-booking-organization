@@ -6,7 +6,7 @@ const { hostname } = window.location;
 const servers = {
   local: "http://localhost:3024",
   customDev: "https://react.customdev.solutions:3024",
-  live: "https://react.customdev.solutions:3024",
+  live: "https://api.eventmela.com/",
 };
 
 var URL;
