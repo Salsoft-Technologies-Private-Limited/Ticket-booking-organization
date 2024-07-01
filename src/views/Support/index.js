@@ -594,7 +594,7 @@ const ContactUs = () => {
                                           <div className="help-frame">
                                             <div>
                                               <h6>Contact Information</h6>
-                                              <span>ABC Company Name</span>
+                                              <span>Event Mela</span>
                                               <p>
                                                 <FaPhoneVolume />{" "}
                                                 +1 (269) 888-8866
